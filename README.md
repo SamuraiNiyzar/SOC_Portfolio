@@ -16,7 +16,7 @@ Sysmon (endpoint telemetry), FLARE-VM (analyst workstation).
 
 ## Architecture
 
-[Insert your network diagram image here]
+![Network diagram](./Screenshots/pfSenseNetworkTopologyDiagram.png)
 
 - **Green zone (10.10.10.0/24):** AD-SERVER, Victim, FLARE-VM
 - **DMZ zone (172.16.0.0/24):** Kali (attacker)
@@ -160,39 +160,41 @@ originating from 172.16.0.10 (DMZ/external-equivalent segment):
 
 1. Reconnaissance activity (Nmap) identified RDP exposed on the victim host.
 2. A brute-force attack against a local account (testuser) followed, 
-   generating 7 failed authentication events within [timeframe]. 
+   generating 7 failed authentication events. 
    CrowdSec's automated response banned the source IP after 7 attempts, 
-   before [did/did not] any attempt succeed.
+   before did any attempt succeed.
 3. Separately, a simulated phishing payload was executed on the victim, 
    triggering a PowerShell process spawned from a script host — flagged 
    immediately by the custom Wazuh rule.
 
-**Recommendation:** [your own analyst-style conclusion — e.g., "Disable 
-testuser or enforce account lockout after N failed attempts; the CrowdSec 
-block mitigated further brute-force attempts but did not prevent the initial 
-exposure. RDP should not be directly exposed without additional controls 
-such as MFA or VPN-gated access in a production environment."]
+**Recommendation:** The best way to protect an account from brute-force is to 
+create a stronger account policy, set a delay after each failed login attempt 
+and add multi-factor authentication. Open ports are bad for a company; they 
+give hackers more area for an attack, so close unused ports and update all 
+software and systems.To prevent phishing attacks and malware infection installing 
+a Secure Email Gateway, Host-Based firewall, antivirus, and up-to-date systems 
+will be the best choice date systems will be the best choice.
 
 ---
 
 ## Challenges and Lessons Learned
 
-[This section matters — be honest and specific. Examples of what to include, 
-in your own words:]
-
-- Initially planned this lab around Microsoft Sentinel, but could not obtain 
-  a usable free Azure subscription. Pivoted to Wazuh, a self-hosted open-source 
-  SIEM, which required a different detection-rule syntax (XML-based rules vs. KQL).
-- [Describe the DNS forwarder issue on AD-SERVER — e.g., "External DNS resolution 
-  failed on an internal VM because AD's DNS role had no forwarder configured; 
-  diagnosed by testing DNS resolution with resolvectl and fixing via 
-  Add-DnsServerForwarder."]
-- [Describe the wazuh-db startup issue and how you diagnosed it via journalctl/
-  manual daemon start]
-- [Describe the rule-ID mismatch — your custom brute-force rule initially 
-  referenced the wrong base rule ID (60105 instead of 60122); traced this by 
-  checking the actual alerts.json output rather than guessing.]
-- [Anything else — Whonix not working for the attacker role, the DMZ firewall 
-  rule needing both TCP and UDP for the package install, etc.]
-
+- After installing and configuring the DNS server and Wazuh, Wazuh can't use the 
+  internet even for simple updates. The diagnosis shows that the internal soc.lab 
+  domain is available, but the external one is not. AD's DNS didn't forward 
+  configuration to allow unknown traffic to the internet; fixed with 
+  Add-DnsServerForwarder -IPAddress "8.8.8.8".
+- When I was installing Wazuh, the database had a startup error. After diagnose I 
+  found that startup ordering was wrong I manual change it.
+- The next Wazuh problem was an API offline status caused by incorrect credentials 
+  in wazuh-api, so I copied the correct one from the wazuh-install-files.tar file 
+  and reconnected the dashboard. 
+- The first custom Wazuh rule had the wrong "<if_matched_sid>" rule ID for the 
+  actual Wazuh version. In "alerts.json," I found the correct one for my test.
+- Next error was Wazuh and pfSense integration; pfSense firewall logs were not
+  in the Wazuh alerts dashboard. I configured "<connection>" and a remote listener 
+  for incoming log type; changed from secure agent communication to ordinary syslog 
+  messages. 
+- One of the main things learned: always check and test all systems before the 
+  real attack.
 
