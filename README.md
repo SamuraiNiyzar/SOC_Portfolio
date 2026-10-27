@@ -153,27 +153,36 @@ execution to confirm its behavior without relying solely on dynamic detection.
 
 ## Investigation Summary
 
-[Example of the report to the team:]
+### SOC Incident Report — Multi-Stage Simulated Intrusion
 
-On 10.19.2026, the lab environment detected a multi-stage simulated intrusion 
-originating from 172.16.0.10 (DMZ/external-equivalent segment):
+**Date:** 19 October 2026  
+**Source IP:** `172.16.0.10`  
+**Environment:** Home lab — DMZ/external-equivalent segment
 
-1. Reconnaissance activity (Nmap) identified RDP exposed on the victim host.
-2. A brute-force attack against a local account (testuser) followed, 
-   generating 7 failed authentication events. 
-   CrowdSec's automated response banned the source IP after 7 attempts, 
-   before did any attempt succeed.
-3. Separately, a simulated phishing payload was executed on the victim, 
-   triggering a PowerShell process spawned from a script host — flagged 
-   immediately by the custom Wazuh rule.
+## Incident summary
 
-**Recommendation:** The best way to protect an account from brute-force is to 
-create a stronger account policy, set a delay after each failed login attempt 
-and add multi-factor authentication. Open ports are bad for a company; they 
-give hackers more area for an attack, so close unused ports and update all 
-software and systems.To prevent phishing attacks and malware infection installing 
-a Secure Email Gateway, Host-Based firewall, antivirus, and up-to-date systems 
-will be the best choice date systems will be the best choice.
+The lab detected a simulated multi-stage intrusion involving network 
+reconnaissance, brute-force attempts and suspicious PowerShell execution.
+
+## Findings
+
+1. **Reconnaissance:** Nmap identified an exposed RDP service on the victim host.
+2. **Brute-force:** Seven failed authentication attempts against the local account
+   `testuser` were recorded. CrowdSec automatically banned the source IP after
+   the seventh attempt. No successful login was observed.
+3. **Suspicious execution:** A simulated phishing payload triggered a PowerShell
+   process spawned by a script host. A custom Wazuh rule generated an alert.
+
+## Recommended actions
+
+- Enforce strong password policies, account lockout or throttling, and MFA where supported.
+- Restrict RDP access to authorized hosts and close unnecessary ports.
+- Investigate suspicious PowerShell activity and review related process and authentication logs.
+- Deploy email filtering, endpoint protection and host-based firewall controls.
+- Keep operating systems and applications patched.
+
+**Outcome:** The brute-force attempt was automatically blocked before any successful 
+authentication. Suspicious PowerShell execution was detected and flagged for investigation.
 
 ---
 
