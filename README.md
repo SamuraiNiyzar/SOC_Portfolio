@@ -155,7 +155,7 @@ execution to confirm its behavior without relying solely on dynamic detection.
 
 [Write this as if reporting to a team lead. Example skeleton:]
 
-On (...), the lab environment detected a multi-stage simulated intrusion 
+On 10.19.2026, the lab environment detected a multi-stage simulated intrusion 
 originating from 172.16.0.10 (DMZ/external-equivalent segment):
 
 1. Reconnaissance activity (Nmap) identified RDP exposed on the victim host.
