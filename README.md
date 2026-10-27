@@ -153,7 +153,7 @@ execution to confirm its behavior without relying solely on dynamic detection.
 
 ## Investigation Summary
 
-[Example of report to team:]
+[Example of the report to the team:]
 
 On 10.19.2026, the lab environment detected a multi-stage simulated intrusion 
 originating from 172.16.0.10 (DMZ/external-equivalent segment):
