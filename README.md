@@ -159,12 +159,12 @@ execution to confirm its behavior without relying solely on dynamic detection.
 **Source IP:** `172.16.0.10`  
 **Environment:** Home lab — DMZ/external-equivalent segment
 
-## Incident summary
+#### Incident summary
 
 The lab detected a simulated multi-stage intrusion involving network 
 reconnaissance, brute-force attempts and suspicious PowerShell execution.
 
-## Findings
+#### Findings
 
 1. **Reconnaissance:** Nmap identified an exposed RDP service on the victim host.
 2. **Brute-force:** Seven failed authentication attempts against the local account
@@ -173,7 +173,7 @@ reconnaissance, brute-force attempts and suspicious PowerShell execution.
 3. **Suspicious execution:** A simulated phishing payload triggered a PowerShell
    process spawned by a script host. A custom Wazuh rule generated an alert.
 
-## Recommended actions
+#### Recommended actions
 
 - Enforce strong password policies, account lockout or throttling, and MFA where supported.
 - Restrict RDP access to authorized hosts and close unnecessary ports.
